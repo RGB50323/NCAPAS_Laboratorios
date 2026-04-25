@@ -10,8 +10,7 @@ public class Bow {
     private String ultimaUbicacion;
     private String aulaOrigen;
 
-    public Bow() {
-    }
+    public Bow() {}
 
     public Bow(String nombre, String virusBase, int nivelPeligro, String puntoDebil,
                String estadoActual, String ultimaUbicacion, String aulaOrigen) {
