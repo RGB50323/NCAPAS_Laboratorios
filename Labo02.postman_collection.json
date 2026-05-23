@@ -1,0 +1,166 @@
+{
+  "info": {
+    "_postman_id": "7c646f5c-2477-4423-894b-b459940e926c",
+    "name": "Labo02",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39214456"
+  },
+  "item": [
+    {
+      "name": "One Piece",
+      "item": [
+        {
+          "name": "CreatePirate",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Monkey D. Luffy\",\r\n    \"bounty\": 30000.0,\r\n    \"crew\": \"Strawhats\",\r\n    \"pirate_alive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pirate/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "pirate",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetPirate",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Monkey D. Luffy\",\r\n    \"bounty\": 30000.0,\r\n    \"crew\": \"Strawhats\",\r\n    \"pirate_alive\": true\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pirate/8560a5fc-3c68-4c3e-9ded-acf87b871de7",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "pirate",
+                "8560a5fc-3c68-4c3e-9ded-acf87b871de7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllPirates",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Monkey D. Luffy\",\r\n    \"bounty\": 30000.0,\r\n    \"crew\": \"Strawhats\",\r\n    \"pirate_alive\": true\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pirate/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "pirate",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeletePirate",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Monkey D. Luffy\",\r\n    \"bounty\": 30000.0,\r\n    \"crew\": \"Strawhats\",\r\n    \"pirate_alive\": true\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pirate/c1ff16d2-bcaa-4d65-96e1-678e141d6d12",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "pirate",
+                "c1ff16d2-bcaa-4d65-96e1-678e141d6d12"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdatePirate",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Monkey D. Luffy\",\r\n    \"bounty\": 30000.0,\r\n    \"crew\": \"Strawhats pirates\",\r\n    \"pirate_alive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pirate/update/8560a5fc-3c68-4c3e-9ded-acf87b871de7",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "pirate",
+                "update",
+                "8560a5fc-3c68-4c3e-9ded-acf87b871de7"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
