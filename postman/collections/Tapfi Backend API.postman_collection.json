@@ -1,0 +1,2921 @@
+{
+  "info": {
+    "_postman_id": "5562c227-c065-444e-a31b-6a86b716f6ce",
+    "name": "Tapfi Backend API",
+    "description": "Complete API collection for Tapfi Backend - Multi-tenant WiFi analytics platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "id": "a3e929c7-f027-4984-ad60-425789b2247d",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"securepassword123\",\n  \"name\": \"John Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register",
+                ""
+              ]
+            },
+            "description": "Register a new user."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "0ae23013-87ed-47fb-9aed-bc132314fb52",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.environment.set(\"access_token\", jsonData.token);",
+                  "  pm.environment.set(\"refresh_token\", jsonData.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "45779862-92dc-4e14-a62a-30ca780d7040",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "c137921d-40a3-4e0e-910c-ba992676ac87",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "content-type": true
+            }
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "Login and get JWT tokens. Sets access_token and refresh_token in environment."
+          },
+          "response": []
+        },
+        {
+          "name": "Login with Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.environment.set(\"access_token\", jsonData.access);",
+                  "  pm.environment.set(\"refresh_token\", jsonData.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "id": "b1d4a63f-12ec-4975-8930-adccc437c6fd"
+              }
+            }
+          ],
+          "id": "e8d86ace-e907-4206-8676-330415ce73c8",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/{{access_token}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                "{{access_token}}"
+              ]
+            },
+            "description": "Login with temporary JWT token from URL parameter."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "id": "09a23a27-38af-4649-946b-4155f63ce89e",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/token/refresh/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "token",
+                "refresh",
+                ""
+              ]
+            },
+            "description": "Refresh access token using refresh token."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User",
+          "id": "9460c696-931e-4768-9874-b924b21912c1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/user/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "user",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Get user details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Edit User",
+          "id": "b776cd9c-932d-48fe-9ddf-3ff43810cb46",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"photo\": \"https://example.com/photo.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/user/edit/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "user",
+                "edit",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Edit user information."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "id": "7c9d4a03-2154-4ae9-b342-b84ca9afcffb",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/user/delete/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "user",
+                "delete",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Delete a user."
+          },
+          "response": []
+        },
+        {
+          "name": "List User Sessions",
+          "id": "4f6ecd52-5e42-4be2-a027-c15e25cfa563",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/sessions/user/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "sessions",
+                "user",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Get all sessions for a user."
+          },
+          "response": []
+        },
+        {
+          "name": "Finalize Session by Token",
+          "id": "c6b5fb96-b6cf-4240-af86-9af74bd07210",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{session_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/sessions/finalize/{{session_token}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "sessions",
+                "finalize",
+                "{{session_token}}"
+              ]
+            },
+            "description": "Finalize a session by token."
+          },
+          "response": []
+        }
+      ],
+      "id": "f1cc6931-43d9-419c-b29f-cae225440a6f",
+      "description": "Authentication and user management endpoints"
+    },
+    {
+      "name": "Organizations",
+      "item": [
+        {
+          "name": "Create Organization",
+          "id": "a1ed877c-d96a-4c35-b7d4-1da12ac61de6",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Organization\",\n  \"domain\": \"myorg\",\n  \"licence_type\": 1,\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/organizations/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                ""
+              ]
+            },
+            "description": "Create a new organization."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Organization",
+          "id": "e3d7413c-8ced-4c6a-b6ae-8977e750e508",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/organizations/{{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                "{{organization_id}}"
+              ]
+            },
+            "description": "Get organization details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "List User Organizations",
+          "id": "43c87113-9225-45d5-a740-fcdf2f76e3b4",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/organizations/user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                "user"
+              ]
+            },
+            "description": "List all organizations for the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Set Organization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.environment.set(\"access_token\", jsonData.access);",
+                  "  pm.environment.set(\"refresh_token\", jsonData.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "id": "8c25ab19-33b8-4225-9f5c-f914aeff71c2"
+              }
+            }
+          ],
+          "id": "61db8684-3318-45eb-b7db-7d7cbb141278",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": {{organization_id}}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/organizations/set",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                "set"
+              ]
+            },
+            "description": "Set active organization for the user session."
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Organization",
+          "id": "9092e81e-fbbc-4de8-b2c4-47f8e7014778",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"color\": \"460b00\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/organizations/edit/{{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                "edit",
+                "{{organization_id}}"
+              ]
+            },
+            "description": "Edit organization details."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Organization",
+          "id": "c1ef8723-f400-40bd-ad99-d55b7d6e40e3",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/organizations/delete/{{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organizations",
+                "delete",
+                "{{organization_id}}"
+              ]
+            },
+            "description": "Delete an organization."
+          },
+          "response": []
+        }
+      ],
+      "id": "82c22a83-4477-48d5-9fa4-4af1ea7792fa",
+      "description": "Organization management endpoints"
+    },
+    {
+      "name": "Organization Config",
+      "item": [
+        {
+          "name": "Create Organization Config",
+          "id": "6bc20051-2261-44a0-890e-54b057fbaebe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "logotype",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "isotype",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "color",
+                  "value": "#0265d2",
+                  "type": "text"
+                },
+                {
+                  "key": "bucket_id",
+                  "value": "tapfi_bucket_1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "guillermo.cartagena@mooviit.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "75666222",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "Av. Las Magnolias 206, San Salvador",
+                  "type": "text"
+                },
+                {
+                  "key": "api_meraki",
+                  "value": "test",
+                  "type": "text"
+                },
+                {
+                  "key": "bucket_id",
+                  "value": "test_id",
+                  "type": "text"
+                },
+                {
+                  "key": "organization",
+                  "value": "4",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/organization-settings/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organization-settings",
+                ""
+              ]
+            },
+            "description": "Edit organization details."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Organization Config",
+          "id": "210665cb-decc-4d27-8861-8497998322ac",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/organization-settings/{{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organization-settings",
+                "{{organization_id}}"
+              ]
+            },
+            "description": "Get organization details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "List User Organizations",
+          "id": "850585e3-8a76-48c4-bb60-c14067a968c3",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/organization-settings/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organization-settings",
+                ""
+              ]
+            },
+            "description": "List all organizations for the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Organization Config",
+          "id": "cc30f799-ee85-48d5-bd24-fd4720b5263e",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/organization-settings/edit/{{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organization-settings",
+                "edit",
+                "{{organization_id}}"
+              ]
+            },
+            "description": "Edit organization details."
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Api Meraki",
+          "id": "70d6907e-1c47-4fdb-8d05-940c99d90a90",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"api_meraki\": \"a08763b3db7ac425ed7eb744155144ff5f2cd6fd\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/organization-settings/api-meraki/{{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organization-settings",
+                "api-meraki",
+                "{{organization_id}}"
+              ]
+            },
+            "description": "Edit organization details."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Organization Config",
+          "id": "88e0ec6b-acfa-4a42-800a-edb3a73f317a",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/organization-settings/delete/4",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "organization-settings",
+                "delete",
+                "4"
+              ]
+            },
+            "description": "Delete an organization."
+          },
+          "response": []
+        }
+      ],
+      "id": "167304c2-e2a3-4b1f-a98e-c3d72a9548e8",
+      "description": "Organization management endpoints"
+    },
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "List Clients",
+          "id": "60d4af1a-a1fd-4834-9f97-4502d90ff0ca",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                },
+                {
+                  "key": "verified",
+                  "value": "true",
+                  "description": "Filter by verification status",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "1",
+                  "description": "Filter by gender ID",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "john",
+                  "description": "Search in name, email, phone",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "List all clients with pagination and filters."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Client",
+          "id": "508d37b7-d131-465b-b066-f2d4bc4f7a0f",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"mail\": \"john@example.com\",\n  \"phone\": \"+1234567890\",\n  \"gender\": 1,\n  \"birthday\": \"1990-01-01\",\n  \"verified\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/clients/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                ""
+              ]
+            },
+            "description": "Create a new client."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Client",
+          "id": "ac48a4f4-e0a7-4c99-b6cc-2f9da64cf798",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/{{client_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "{{client_id}}",
+                ""
+              ]
+            },
+            "description": "Get client details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Client",
+          "id": "04143451-757a-476e-aeee-e06b559f006d",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"mail\": \"updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/clients/{{client_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "{{client_id}}",
+                ""
+              ]
+            },
+            "description": "Update client information."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Client",
+          "id": "77113f83-29b7-4ecd-bdb4-6c3b15dd897b",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/{{client_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "{{client_id}}",
+                ""
+              ]
+            },
+            "description": "Delete a client."
+          },
+          "response": []
+        },
+        {
+          "name": "List Client Devices",
+          "id": "7d0b7912-975b-4452-a378-d70a4bbae7da",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/devices/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "devices",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List all client devices."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Client Device",
+          "id": "5f45857f-552a-42d0-9106-48b37ac67d60",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"client\": 1,\n    \"branch\": 1,\n    \"mac\": \"aa:bb:cc:dd:ee:ff\",\n    \"status\": \"active\"\n  }"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/clients/devices/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "devices",
+                ""
+              ]
+            },
+            "description": "Create a new client device."
+          },
+          "response": []
+        },
+        {
+          "name": "List Genders",
+          "id": "4916a5be-4957-4338-9de0-b7d449762d09",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/genders/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "genders",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "male",
+                  "description": "Search in gender name",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "List all genders."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Client by Device MAC",
+          "id": "ecf07750-6bca-40af-9623-99bd3586beb0",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/devices/by-mac/{{client_mac}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "devices",
+                "by-mac",
+                "{{client_mac}}"
+              ]
+            },
+            "description": "Get client information by device MAC address."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Captive Portal Registration Step by Client MAC",
+          "id": "b2917b04-75bb-44a7-9237-2eef505d60a6",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "7zb4GPpLUWbPSXlE7RYLO0ub_tYhEKMRzb7eIyZ9Dys",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "disabled": true
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clients/devices/captive-portal/registration-step?mac={{client_mac}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "devices",
+                "captive-portal",
+                "registration-step"
+              ],
+              "query": [
+                {
+                  "key": "mac",
+                  "value": "{{client_mac}}"
+                }
+              ]
+            },
+            "description": "Determine captive portal registration step (register / validate / welcome) for a client device MAC."
+          },
+          "response": []
+        }
+      ],
+      "id": "247d6741-d6df-4539-a6d2-c4197af601ee",
+      "description": "Client and device management endpoints"
+    },
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "List Branches",
+          "id": "b21d3552-563a-4dab-b127-1298a4df4281",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/branches/?page=1&page_size=20&has_valid_meraki_network_identificator=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "branches",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                },
+                {
+                  "key": "has_valid_meraki_network_identificator",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "List all branches."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Branch",
+          "id": "9e7e2180-8df7-4a59-bcaa-4d3750ebcf33",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sucursal SIMAAN Honduras test\",\n  \"description\": \"Test description\",\n  \"address\": \"123 Main St\",\n  \"meraki_network_id\": 1,\n  \"meraki_organization_id\": 2,\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/branches",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "branches"
+              ]
+            },
+            "description": "Create a new branch."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Branch",
+          "id": "a567252e-217c-4a24-8139-6dd7f9ea9bab",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/branches/{{branch_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "branches",
+                "{{branch_id}}"
+              ]
+            },
+            "description": "Get branch details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Branch",
+          "id": "b43b89d4-836a-4e65-9bb1-11d48d20d9ea",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Branch Name\",\n  \"address\": \"Updated Branch address\",\n  \"meraki_network_id\": 2,\n  \"meraki_organization_id\": 2,\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/branches/{{branch_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "branches",
+                "{{branch_id}}"
+              ]
+            },
+            "description": "Update branch information."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Module",
+          "id": "d7240c22-0086-40e3-89c9-f4536d5e1613",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/branches/{{branch_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "branches",
+                "{{branch_id}}",
+                ""
+              ]
+            },
+            "description": "Delete a branch."
+          },
+          "response": []
+        },
+        {
+          "name": "List Branch Licenses",
+          "id": "e0b55855-7ac0-4259-b9a7-903b70870f68",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/branches/licenses/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "branches",
+                "licenses",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List all branch licenses."
+          },
+          "response": []
+        }
+      ],
+      "id": "dc9df69b-caae-40a2-b1c2-98654eca356b",
+      "description": "Branch management endpoints"
+    },
+    {
+      "name": "Zones",
+      "item": [
+        {
+          "name": "List Zones",
+          "id": "fbca4fb1-4bfc-4950-b284-a4155eadf8b5",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/zones/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "zones",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List all zones."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Zone",
+          "id": "4d45133e-1838-4263-939c-bd655dc220d1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zone 33\",\n  \"description\": \"test description\",\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/zones/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "zones",
+                ""
+              ]
+            },
+            "description": "Create a new zone."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Zone",
+          "id": "74086e0c-d46c-4341-994e-afc157371508",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/zones/{{zone_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "zones",
+                "{{zone_id}}",
+                ""
+              ]
+            },
+            "description": "Get zone details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Zone",
+          "id": "f7717afc-2ce9-41fd-87fe-99a4d9440520",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Zone Name\",\n  \"description\": \"Add description\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/zones/{{zone_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "zones",
+                "{{zone_id}}",
+                ""
+              ]
+            },
+            "description": "Update zone information."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Zone",
+          "id": "0be5bca2-f37d-42d7-8a3e-1c3dda8c04b5",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/zones/{{zone_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "zones",
+                "{{zone_id}}",
+                ""
+              ]
+            },
+            "description": "Delete a zone."
+          },
+          "response": []
+        }
+      ],
+      "id": "1189c3e0-0833-4c36-9992-e8c034d55f4d",
+      "description": "Zone management endpoints"
+    },
+    {
+      "name": "Access Points",
+      "item": [
+        {
+          "name": "List Access Points",
+          "id": "a3322448-1254-4f53-9845-fd6af929b262",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/access-points/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "access-points",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List all access points."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Access Point",
+          "id": "be0aa313-7bf5-4d6c-999a-249c6283a7c4",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AP-001\",\n  \"zone_id\": 1,\n  \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/access-points/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "access-points",
+                ""
+              ]
+            },
+            "description": "Create a new access point."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Access Point",
+          "id": "5aadff8c-77df-4712-bd33-c37eacb3f73d",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/access-points/{{access_point_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "access-points",
+                "{{access_point_id}}",
+                ""
+              ]
+            },
+            "description": "Get access point details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Access Point",
+          "id": "c984cd96-e4a3-4b42-86eb-635ff0d6bae5",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated AP Name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/access-points/{{access_point_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "access-points",
+                "{{access_point_id}}",
+                ""
+              ]
+            },
+            "description": "Update access point information."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Access Point",
+          "id": "72508451-5fe8-4344-a1f3-26c098ab5ddb",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/access-points/{{access_point_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "access-points",
+                "{{access_point_id}}",
+                ""
+              ]
+            },
+            "description": "Delete an access point."
+          },
+          "response": []
+        }
+      ],
+      "id": "42698bd0-a0ea-4aa6-9cb1-90481f6713a3",
+      "description": "Access point management endpoints"
+    },
+    {
+      "name": "Campaigns",
+      "item": [
+        {
+          "name": "List Campaigns",
+          "id": "04d5f6d7-2fdb-4db8-b5de-c0bcab4efe08",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "uuid": "530a870a-ff50-482b-b0c5-8208e9eb13f5"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20",
+                  "uuid": "f9bb04f9-e1d8-402c-9a51-3b8643cee9aa"
+                }
+              ]
+            },
+            "description": "List all campaigns."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Campaign",
+          "id": "d363000c-25aa-42bb-bc04-1dcc918a20bd",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Newsletter Mensual - Junio 2026\",\n    \"description\": \"Boletín informativo mensual para reactivar a usuarios inactivos.\",\n    \"campaign_type\": 3,\n    \"subject\": \"Te extrañamos... ¡Mira lo que ha cambiado! ✨\",\n    \"datetime_send\": \"2026-06-01T08:30:00.000Z\",\n    \"content\": \"¡Hola de nuevo! Ha pasado un tiempo desde tu última visita. Hemos renovado nuestro catálogo y tenemos muchas sorpresas esperándote. Haz clic aquí para ver nuestras novedades.\",\n    \"status\": \"draft\",\n    \"archive\": false,\n    \"gender\": \"both\",\n    \"visit_frequency\": \"inactive\",\n    \"age_from\": 0,\n    \"age_to\": 100,\n    \"inactive_days_from\": 30,\n    \"inactive_days_to\": 90\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                ""
+              ]
+            },
+            "description": "Create a new campaign."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Campaign",
+          "id": "52141b56-f375-4823-86da-41a33b7106ce",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/{{campaign_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "{{campaign_id}}",
+                ""
+              ]
+            },
+            "description": "Get campaign details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Campaign",
+          "id": "fad7fa83-ee58-4fab-a3ac-b49c93edd898",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Summer Campaign update\",\n    \"description\": \"prueba update\",\n    \"campaign_type\": 3, \n    \"datetime_send\": \"2025-11-20 10:00:00.000000\",\n    \"content\": \"Test\",\n    \"status\": \"active\",\n    \"archive\": 0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/{{campaign_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "{{campaign_id}}",
+                ""
+              ]
+            },
+            "description": "Update campaign information."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Campaign",
+          "id": "80f8881b-0302-464d-9cf7-712df42b4eb3",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/{{campaign_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "{{campaign_id}}",
+                ""
+              ]
+            },
+            "description": "Delete a campaign."
+          },
+          "response": []
+        }
+      ],
+      "id": "dfe77f87-863c-481c-a023-400b8354fb10",
+      "description": "Campaign management endpoints"
+    },
+    {
+      "name": "Meraki Organizations",
+      "item": [
+        {
+          "name": "List Meraki Organizations",
+          "id": "c759f6bb-d81e-4e07-93f1-a1b999bc1e87",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/meraki-organizations/meraki-organizations/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "meraki-organizations",
+                "meraki-organizations",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List all Meraki organizations."
+          },
+          "response": []
+        }
+      ],
+      "id": "ddda2632-7c28-43f9-b505-5cdf863d88d4",
+      "description": "Meraki organization management endpoints"
+    },
+    {
+      "name": "Captive Portals",
+      "item": [
+        {
+          "name": "List Templates",
+          "id": "81b037da-cef0-44ec-a8f6-b362a9a5003f",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/captive-portals/templates/list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "captive-portals",
+                "templates",
+                "list"
+              ]
+            },
+            "description": "List all captive portal templates."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Template",
+          "id": "42d92cc3-5530-44d1-b4df-fbf72e62bb7e",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Template\",\n  \"html_content\": \"<html>...</html>\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/captive-portals/templates",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "captive-portals",
+                "templates"
+              ]
+            },
+            "description": "Create a new captive portal template."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Captive Portal by AP MAC",
+          "id": "ae674921-fbfd-497c-9078-03146b18656f",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "7zb4GPpLUWbPSXlE7RYLO0ub_tYhEKMRzb7eIyZ9Dys",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer 2eAz-kJriCUTZ_pEqUaI-Z9EimEj0YI3_EwoQd98SrU",
+                "disabled": true
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/captive-portals/active/by-ap-mac?mac={{ap_mac}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "captive-portals",
+                "active",
+                "by-ap-mac"
+              ],
+              "query": [
+                {
+                  "key": "mac",
+                  "value": "{{ap_mac}}"
+                }
+              ]
+            },
+            "description": "Resolve the active captive portal template for a given access point MAC (scheduler → branch config → default template)."
+          },
+          "response": []
+        }
+      ],
+      "id": "e27be4a5-a6cb-43a4-8ad2-6ad1b2f3deed",
+      "description": "Captive portal management endpoints"
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Visit Analytics",
+          "id": "61f97830-db57-491c-ac23-e66b62c120cc",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/analytics/visits/{{branch_id}}/{{date_start}}/{{date_end}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "visits",
+                "{{branch_id}}",
+                "{{date_start}}",
+                "{{date_end}}"
+              ]
+            },
+            "description": "Get visit analytics data from MongoDB. Date format: YYYYMMDD (e.g., 20250127)"
+          },
+          "response": []
+        }
+      ],
+      "id": "83825e3e-3b8b-41c3-be9c-03900daf4b65",
+      "description": "Analytics endpoints"
+    },
+    {
+      "name": "Meraki",
+      "item": [
+        {
+          "name": "Get Organization Meraki",
+          "id": "d0dce1b4-5745-4f23-8db4-b263eceba377",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/meraki/organizations/{{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "meraki",
+                "organizations",
+                "{{organization_id}}"
+              ]
+            },
+            "description": "Get organization details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Networks Meraki",
+          "id": "9f4e6c1c-ef54-4bf4-baf0-a2d6e673f701",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/meraki/organizations/{{organization_id}}/networks/584342051651323269?refresh=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "meraki",
+                "organizations",
+                "{{organization_id}}",
+                "networks",
+                "584342051651323269"
+              ],
+              "query": [
+                {
+                  "key": "refresh",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Get organization details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Networks Device Meraki",
+          "id": "46782d18-070c-40c6-9217-8466186591b6",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/meraki/organizations/{{organization_id}}/networks/{{branch_id}}/access-points",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "meraki",
+                "organizations",
+                "{{organization_id}}",
+                "networks",
+                "{{branch_id}}",
+                "access-points"
+              ]
+            },
+            "description": "Get organization details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Access Point Device Meraki",
+          "id": "e02ce3c3-8167-458d-bffe-7ee28a7c6a89",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"branch_id\": 8,\n    \"access_points\": [\n        {\n        \"latitude\": 37.4180951010362,\n        \"longitude\": -122.098531723022,\n        \"serial\": \"Q4DE-LHJY-HGPG\",\n        \"mac\": \"bc:b1:d3:1e:18:d4\",\n        \"name\": \"SWITCH - PPAL \",\n        \"networkId\": \"L_584342051651328626\"\n    },\n    {\n        \"latitude\": 13.70626,\n        \"longitude\": -89.21164,\n        \"serial\": \"Q4AC-SMPU-HFKM\",\n        \"mac\": \"bc:33:40:c0:63:b8\",\n        \"name\": \"NODO 1 - CUARTO DE EQUIPOS PRINCIPAL - NIVEL 1\",\n        \"networkId\": \"L_584342051651328626\"\n    }\n    ]\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/meraki/access-points/bulk",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "meraki",
+                "access-points",
+                "bulk"
+              ]
+            },
+            "description": "Get organization details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Zone Access Point",
+          "id": "49738782-d7f4-4838-ba28-000a69970a7c",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"zone_id\": 8\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/meraki/access-points/{{access_point_id}}/zone",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "meraki",
+                "access-points",
+                "{{access_point_id}}",
+                "zone"
+              ]
+            },
+            "description": "Get organization details by ID."
+          },
+          "response": []
+        }
+      ],
+      "id": "855fcbd0-c2b9-421a-a96f-5b7a65a4ab3c"
+    },
+    {
+      "name": "Modules",
+      "item": [
+        {
+          "name": "List Modules",
+          "id": "f6256bbc-0832-48a6-a062-ffcc26d88128",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/modules/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "modules",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List all access points."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Module",
+          "id": "d0097dbe-304c-446e-82af-a526faa36957",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test\",\n  \"code\": \"test_code\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/modules/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "modules",
+                ""
+              ]
+            },
+            "description": "Create a new branch."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Module",
+          "id": "13b901c4-79f5-4ef1-8dda-d78968764849",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test\",\n  \"code\": \"test_code_updated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/modules/3/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "modules",
+                "3",
+                ""
+              ]
+            },
+            "description": "Create a new branch."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Module",
+          "id": "95f4d38a-4309-4963-89ed-06a0315ffbbb",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/modules/2/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "modules",
+                "2",
+                ""
+              ]
+            },
+            "description": "Delete a branch."
+          },
+          "response": []
+        }
+      ],
+      "id": "c86d4895-fc1c-4f51-a48e-c28eec978e31"
+    },
+    {
+      "name": "SubModules",
+      "item": [
+        {
+          "name": "List SubModules",
+          "id": "28b03ae7-ca06-4648-b5a0-69780be20767",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/modules/submodules/?page=1&page_size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "modules",
+                "submodules",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "List all access points."
+          },
+          "response": []
+        },
+        {
+          "name": "Create SubModule",
+          "id": "a9718f8c-c2f6-4d74-9380-b40a1f88624b",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"submodule\": \"subTest\",\n  \"submodule_code\": \"subtest_code\",\n  \"module\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/modules/submodules/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "modules",
+                "submodules",
+                ""
+              ]
+            },
+            "description": "Create a new branch."
+          },
+          "response": []
+        },
+        {
+          "name": "Update SubModule",
+          "id": "4a5293da-db14-4a1b-85ea-de30ddaee7b4",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"submodule\": \"subTest_updated\",\n  \"submodule_code\": \"subtest_code_updated\",\n  \"module\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/modules/submodules/3/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "modules",
+                "submodules",
+                "3",
+                ""
+              ]
+            },
+            "description": "Create a new branch."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete SubModule",
+          "id": "e62cf59a-9302-4369-ad2a-94f49fd43536",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Origin",
+                "value": "{{origin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/modules/submodules/3/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "modules",
+                "submodules",
+                "3",
+                ""
+              ]
+            },
+            "description": "Delete a branch."
+          },
+          "response": []
+        }
+      ],
+      "id": "cac8cb21-3d1c-4f15-baf2-11e02b970d59"
+    },
+    {
+      "name": "New Request",
+      "id": "e04881ee-3ee6-40bf-8d4f-45da3711c790",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "id": "c229d238-3a07-4eeb-adf8-57237eb57a31",
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "id": "e9c4d98f-72f3-4a1f-9c48-d34031783620",
+      "key": "origin",
+      "value": "http://localhost:4200",
+      "type": "string"
+    },
+    {
+      "id": "a206a8ea-36b9-414e-929f-eb686314b3f8",
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "e93c0a81-02cf-4ac7-8c90-2adaf25fde78",
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "2c43d55b-c833-4e15-bc1f-6695420b7e20",
+      "key": "user_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "8fd98578-aea3-46b6-a07a-e487c1ec1f09",
+      "key": "organization_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "f5709bb8-4568-4240-b43c-db79df4685ab",
+      "key": "branch_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "ebed48f9-a4a4-4f0f-8c40-3c5e3006ec08",
+      "key": "client_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "66614b21-dcc3-4bc4-8bbd-db7d15abdf2f",
+      "key": "zone_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "909f1cff-55f6-41a9-b912-dab4175cccd1",
+      "key": "access_point_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "a40c6648-0f7c-4868-b105-c0df7b43d2b6",
+      "key": "campaign_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "6ce883e2-cc7f-45e8-b4be-a79103eaec65",
+      "key": "meraki_org_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "1cf64fc8-04a0-4f26-abf8-580c787cf540",
+      "key": "validation_type_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "74b286ce-837e-461e-b7bf-b371fa9933cd",
+      "key": "template_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "af7c3e54-1707-451d-8cd0-5e54a11b5d34",
+      "key": "scheduler_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "f7f12b57-6e2e-4e75-aadb-728969c94e06",
+      "key": "date_start",
+      "value": "20250101",
+      "type": "string"
+    },
+    {
+      "id": "b0ed4764-3612-47c7-9417-78cc1d61351d",
+      "key": "date_end",
+      "value": "20250131",
+      "type": "string"
+    },
+    {
+      "id": "cd98b325-c695-44b5-885c-cf15332482c4",
+      "key": "temp_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "a72905e5-a025-4b5e-a501-c3dfff79a214",
+      "key": "session_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "6b4545e8-1221-42e5-ad9e-eb0200d821dc",
+      "key": "client_mac",
+      "value": "aa:bb:cc:dd:ee:ff",
+      "type": "string"
+    },
+    {
+      "id": "1676e104-5cf9-4659-969a-fe2138abe585",
+      "key": "ap_mac",
+      "value": "aa:bb:cc:dd:ee:ff",
+      "type": "string"
+    },
+    {
+      "id": "69cd4705-c1ce-4ef9-baa5-515e750df4f3",
+      "key": "password",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "id": "afea8ec8-f68d-451f-8dc3-d8ed11c39470",
+      "key": "email",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
